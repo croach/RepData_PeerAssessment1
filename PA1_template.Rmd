@@ -19,21 +19,24 @@ data <- read.csv(unz("activity.zip", "activity.csv"), header=TRUE)
 ## What is mean total number of steps taken per day?
 
 ```{r echo=TRUE, results='asis'}
-total.steps <- tapply(data$steps, data$date, sum, na.rm = TRUE)
-qplot(total.steps, binwidth=2500)
+library(xtable)
+total.steps.per.day <- tapply(data$steps, data$date, sum, na.rm = TRUE)
+qplot(total.steps, binwidth=2000)
 xt <- xtable(data.frame(
-  mean=mean(total.steps), 
-  median=median(total.steps),
-  row.names="Total Steps"
+  mean=mean(total.steps.per.day), 
+  median=median(total.steps.per.day),
+  row.names="Total Steps (per day)"
 ))
 print(xt, type = "html")
 ```
 
-
-
 ## What is the average daily activity pattern?
 
-
+```{r echo=TRUE}
+df <- aggregate(data$steps, list(data$interval), mean, na.rm = TRUE)
+names(df) <- c("Interval", "Average.Steps")
+ggplot(df, aes(x=Interval, y=Average.Steps)) + geom_line()
+```
 
 ## Imputing missing values
 
