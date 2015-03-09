@@ -19,12 +19,12 @@ data <- read.csv(unz("activity.zip", "activity.csv"), header=TRUE)
 ## What is mean total number of steps taken per day?
 
 ```{r echo=TRUE, results='asis'}
-library(xtable)
-total.steps.per.day <- tapply(data$steps, data$date, sum, na.rm = TRUE)
-qplot(total.steps, binwidth=2000)
+df <- aggregate(data$steps, list(data$date), sum, na.rm = TRUE)
+names(df) <- c("Date", "Steps")
+ggplot(df, aes(x=Steps)) + geom_histogram(binwidth=2000)
 xt <- xtable(data.frame(
-  mean=mean(total.steps.per.day), 
-  median=median(total.steps.per.day),
+  mean=mean(df$Steps), 
+  median=median(df$Steps),
   row.names="Total Steps (per day)"
 ))
 print(xt, type = "html")
