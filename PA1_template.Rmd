@@ -22,13 +22,9 @@ data <- read.csv(unz("activity.zip", "activity.csv"), header=TRUE)
 df <- aggregate(data$steps, list(data$date), sum, na.rm = TRUE)
 names(df) <- c("Date", "Steps")
 ggplot(df, aes(x=Steps)) + geom_histogram(binwidth=2000)
-xt <- xtable(data.frame(
-  mean=mean(df$Steps), 
-  median=median(df$Steps),
-  row.names="Total Steps (per day)"
-))
-print(xt, type = "html")
 ```
+
+The mean total number of steps taken each day is __`r mean(df$Steps)`__ and the median is __`r median(df$Steps)`__.
 
 ## What is the average daily activity pattern?
 
@@ -37,6 +33,8 @@ df <- aggregate(data$steps, list(data$interval), mean, na.rm = TRUE)
 names(df) <- c("Interval", "Average.Steps")
 ggplot(df, aes(x=Interval, y=Average.Steps)) + geom_line()
 ```
+
+The 5-minute interval that contains the maximum number of steps, on average across all days in the dataset is __`r df$Interval[which.max(df$Average.Steps)]`__.
 
 ## Imputing missing values
 
