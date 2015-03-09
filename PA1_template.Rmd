@@ -5,12 +5,29 @@ output:
     keep_md: true
 ---
 
+```{r include=FALSE}
+library(ggplot2)
+library(xtable)
+```
 
 ## Loading and preprocessing the data
 
-
+```{r echo=TRUE}
+data <- read.csv(unz("activity.zip", "activity.csv"), header=TRUE)
+```
 
 ## What is mean total number of steps taken per day?
+
+```{r echo=TRUE, results='asis'}
+total.steps <- tapply(data$steps, data$date, sum, na.rm = TRUE)
+qplot(total.steps, binwidth=2500)
+xt <- xtable(data.frame(
+  mean=mean(total.steps), 
+  median=median(total.steps),
+  row.names="Total Steps"
+))
+print(xt, type = "html")
+```
 
 
 
