@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 
@@ -31,7 +26,7 @@ ggplot(total.steps.per.day, aes(x=steps)) +
   ylab("Frequency")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 The mean total number of steps taken each day is __9354.23__ and the median is __10395__.
 
@@ -47,9 +42,9 @@ ggplot(avg.steps.per.interval, aes(x=interval, y=avg.steps)) +
   ylab("Average Number of Steps")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
-The 5-minute interval that contains the maximum number of steps, on average across all days in the dataset, is the interval ____.
+The 5-minute interval that contains the maximum number of steps, on average across all days in the dataset, is the interval __835__.
 
 ## Imputing missing values
 
@@ -76,7 +71,7 @@ ggplot(total.imputed.steps, aes(x=steps)) +
   ylab("Frequency")
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 The mean total number of steps taken each day is __10766.19__ and the median is __10766.19__.
 
@@ -103,4 +98,4 @@ ggplot(df, aes(interval, avg.steps)) +
   ylab("Average Number of Steps")
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
