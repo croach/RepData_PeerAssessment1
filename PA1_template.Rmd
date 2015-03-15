@@ -8,12 +8,17 @@ output:
 ```{r include=FALSE}
 library(ggplot2)
 library(xtable)
+
+# Turn off scientific notation
+options(scipen=999)
 ```
 
 ## Loading and preprocessing the data
 
 ```{r echo=TRUE}
-data <- read.csv(unz("activity.zip", "activity.csv"), header=TRUE)
+data <- read.csv(unz("activity.zip", "activity.csv"), header=TRUE, stringsAsFactors=FALSE)
+data$date <- as.Date(data$date)
+str(data)
 ```
 
 ## What is mean total number of steps taken per day?
@@ -24,7 +29,7 @@ names(df) <- c("Date", "Steps")
 ggplot(df, aes(x=Steps)) + geom_histogram(binwidth=2000)
 ```
 
-The mean total number of steps taken each day is __`r mean(df$Steps)`__ and the median is __`r median(df$Steps)`__.
+The mean total number of steps taken each day is __`r round(mean(df$Steps), 2)`__ and the median is __`r median(df$Steps)`__.
 
 ## What is the average daily activity pattern?
 
@@ -34,10 +39,42 @@ names(df) <- c("Interval", "Average.Steps")
 ggplot(df, aes(x=Interval, y=Average.Steps)) + geom_line()
 ```
 
-The 5-minute interval that contains the maximum number of steps, on average across all days in the dataset is __`r df$Interval[which.max(df$Average.Steps)]`__.
+The 5-minute interval that contains the maximum number of steps, on average across all days in the dataset, is the interval __`r df$Interval[which.max(df$Average.Steps)]`__.
 
 ## Imputing missing values
 
+The total number of records with missing values is __`r sum(is.na(data$steps))`__.
 
+```{r echo=TRUE}
+# Fill in the missing data with the mean for the interval
+avg.steps <- df[match(data$interval, df$Interval), "Average.Steps"]
+data2 <- data
+data2[is.na(data2), "steps"] <- avg.steps[is.na(data2)]
+
+# Recalculate the total number of steps a day with imputed values
+df2 <- aggregate(data2$steps, list(data2$date), sum, na.rm = TRUE)
+names(df2) <- c("Date", "Steps")
+ggplot(df2, aes(x=Steps)) + geom_histogram(binwidth=2000)
+```
+
+The mean total number of steps taken each day is __`r round(mean(df2$Steps), 2)`__ and the median is __`r round(median(df2$Steps), 2)`__.
+
+The values above differ from the earlier mean and median values. Specifically, they are both higher than the original averages. Imputing the missing values has removed the spike we saw around lowest intervals and has intesified the rest of the values in the histogram.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r echo=TRUE}
+# Add a new column to the data called date.type which is a factor with values
+# "weekend" and "weekday" based on the date for the current observation.
+is.weekend = function(date) { weekdays(date) %in% c("Saturday", "Sunday") }
+data$date.type <- as.factor(c("weekday", "weekend")[is.weekend(data$date) + 1])
+
+# Create a data frame with the average steps per interval and date type
+df <- aggregate(data$steps, list(data$interval, data$date.type), mean, na.rm=TRUE)
+names(df) <- c("interval", "date.type", "avg.steps")
+
+# Plot the average number of steps per interval faceted on the date type
+ggplot(df, aes(interval, avg.steps)) + 
+  geom_line() + 
+  facet_wrap(~date.type, ncol=1)
+```
